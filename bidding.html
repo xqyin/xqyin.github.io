@@ -1,7 +1,118 @@
 <html>
   <head>
     <title>Header Bidding - Prebid.js - Test</title>
-    <!-- Add the header bidding wrapper here -->
+    <script> 
+      var PREBID_TIMEOUT = 2000; // auction timeout, in milliseconds. Normally 750-1500ms
+      var MAX_RETRIES = 20;
+      
+      var pbjs = pbjs || {};
+      pbjs.que = pbjs.que || [];
+      pbjs.retries = 0;
+      var googletag = googletag || {};
+      googletag.cmd = googletag.cmd || [];
+      // stop DFP from filling the slots immediately
+      googletag.cmd.push(function() {
+        googletag.pubads().disableInitialLoad();
+      });
+      // and trigger DFP once we've given it the auction winner info
+      function initAdserver() {
+        if (pbjs.initAdserverSet) return;
+        if(!googletag.pubadsReady && pbjs.retries <= MAX_RETRIES) {
+          setTimeout(initAdserver, 50); //poll ms can be adjusted as desired.
+          pbjs.retries++;
+          return;
+        }
+        googletag.cmd.push(function () {
+            pbjs.que.push(function () {
+                pbjs.setTargetingForGPTAsync();
+            });
+            googletag.pubads().refresh();
+        });
+        pbjs.initAdserverSet = true;
+      }
+      // if the auction doesn't finish before the timeout, trigger DFP anyway
+      setTimeout(initAdserver, PREBID_TIMEOUT);
+      // load prebid.js wrapper asynchronously
+      (function () {
+          var d = document;
+          var pbs = d.createElement("script");
+          pbs.type = "text/javascript";
+          pbs.src = 'https://wheresbarney.github.io/js/prebid.js';
+          var target = d.getElementsByTagName("head")[0];
+          target.insertBefore(pbs, target.firstChild);
+      })();
+      
+      // load GPT (DFP) library asynchronously
+      (function () {
+          var gads = document.createElement('script');
+          // gads.async = true;
+          gads.type = 'text/javascript';
+          var useSSL = 'https:' == document.location.protocol;
+          gads.src = (useSSL ? 'https:' : 'http:') +
+                  '//www.googletagservices.com/tag/js/gpt.js';
+          var node = document.getElementsByTagName('script')[0];
+          node.parentNode.insertBefore(gads, node);
+      })();
+      
+      // configure Prebid wrappper - enqueue an anonymous setup function to be executed once it is loaded
+      pbjs.que.push(function() {
+      
+        // set bid granularity (rounding of bids down to 10c intervals from $0 to $20)
+        const customGranularity = {
+          "buckets" : [{
+            "min" : 0,
+            "max" : 20,
+            "increment" : 0.10
+          }]
+        };
+        pbjs.setPriceGranularity(customGranularity);
+        // TODO: tell the wrapper about your specific inventory on this page
+        // kick off the auction
+        pbjs.requestBids({
+          bidsBackHandler: function (bidResponses) {
+            // once the auction completes, trigger our handler function which triggers DFP
+            initAdserver();
+          }
+        });
+        
+        // give the wrapper each bidder's specific config for each ad slot
+        pbjs.bidderSettings = {
+          audienceNetwork: {
+            // Map the wrapper's state to DFP key/value pairs, for line-item matching and template substitution
+            // We use hb_bidder=fan, fb_format<>native, hb_pb=[CPM BID] for line item matching,
+            // and fb_format, fb_placementid, fb_bid as placeholders within the creative
+            adserverTargeting: [
+              {
+                key: "fb_bidid",
+                val: function (bidResponse) {
+                  // make the bidId available for targeting if required
+                  return bidResponse.fbBidId;
+                } 
+              },
+              {   
+                key: "hb_bidder",
+                val: function (bidResponse) {
+                  return 'fan';
+                }
+              },
+              {
+                key: "fb_format",
+                val: function(bidResponse) {
+                  return bidResponse.fbFormat;
+                }
+              },
+              {
+                key: "fb_placementid",
+                val: function(bidResponse) {
+                  return bidResponse.fbPlacementId;
+                }
+              },
+            ],
+          },
+        };	
+      });
+      // TODO: tell DFP about the inventory you have on the page
+    </script>
   </head>
   <body>
     <h2>Header Bidding Test with Prebid.js</h2>
