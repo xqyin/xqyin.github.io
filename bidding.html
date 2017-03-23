@@ -111,12 +111,21 @@
           },
         };	
       });
-      // TODO: tell DFP about the inventory you have on the page
+      // Tell DFP about the inventory we have on the page
+      googletag.cmd.push(function () {
+        googletag.defineSlot('/1023632/hb_300x250_LIG', [[300, 250]], 'div-gpt-ad-1486479040361-0').addService(googletag.pubads());
+        googletag.pubads().enableSingleRequest();
+        googletag.enableServices();
+      });
     </script>
   </head>
   <body>
     <h2>Header Bidding Test with Prebid.js</h2>
     <h5>Div-1</h5>
-    <!-- Add the DFP tag here -->
+    <div id='div-gpt-ad-1486479040361-0'>
+      <script type='text/javascript'>
+        googletag.cmd.push(function() { googletag.display('div-gpt-ad-1486479040361-0'); });
+      </script>
+    </div>
   </body>
 </html>
