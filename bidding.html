@@ -42,7 +42,7 @@
           target.insertBefore(pbs, target.firstChild);
       })();
       
-      // load GPT (DFP) library asynchronously
+      // load GPT (DFP) library 
       (function () {
           var gads = document.createElement('script');
           // gads.async = true;
@@ -54,7 +54,7 @@
           node.parentNode.insertBefore(gads, node);
       })();
       
-      // configure Prebid wrappper - enqueue an anonymous setup function to be executed once it is loaded
+      // configure Prebid wrappper - enqueue an anonymous function to be executed once it is loaded
       pbjs.que.push(function() {
       
         // set bid granularity (rounding of bids down to 10c intervals from $0 to $20)
@@ -66,7 +66,20 @@
           }]
         };
         pbjs.setPriceGranularity(customGranularity);
-        // TODO: tell the wrapper about your specific inventory on this page
+        // Tell the wrapper about your inventory
+        var adUnits = [{
+          code: 'div-gpt-ad-1486479040361-0',
+          sizes: [[300, 250]],
+          bids: [{
+            bidder: 'audienceNetwork',
+            params: {
+              placementId: '730799393753359_739022789597686', // TODO: your placement ID
+              tagVersion: '5.5.web',
+              fullwidth: true,  // or native, 300x250, 320x50
+            }
+          }]
+        },];
+        pbjs.addAdUnits(adUnits);
         // kick off the auction
         pbjs.requestBids({
           bidsBackHandler: function (bidResponses) {
@@ -74,7 +87,6 @@
             initAdserver();
           }
         });
-        
         // give the wrapper each bidder's specific config for each ad slot
         pbjs.bidderSettings = {
           audienceNetwork: {
