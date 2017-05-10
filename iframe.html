@@ -1,0 +1,33 @@
+<html>
+  <head>
+    Iframe Identity Test Page
+  </head>
+  <body>
+    <script>
+      
+    function logInsertingFailure(e) {
+        console.error(e);
+    }
+    var frameId = "_mN_fbIfr";
+    try {
+        const fbIframe = document.createElement('iframe');
+        fbIframe.id = frameId;
+        fbIframe.src = 'https://www.xqyin.sb.facebook.com/audiencenetwork/token/v1/';
+        document.body.appendChild(fbIframe);
+    } catch (e) {
+        logInsertingFailure(e);
+    }
+
+    window.onload =  function() {
+        var fbIfr = document.getElementById(frameId);
+        fbIfr.contentWindow.postMessage("GET_FB_TOKEN", "https://www.xqyin.sb.facebook.com");
+    };
+
+    function receiveFBToken(event) {
+        const origin = event.origin || event.originalEvent.origin;
+        console.log(origin, 'received token', event.data);
+    }
+    window.addEventListener("message", receiveFBToken, false);
+    </script>
+  </body>
+</html>
