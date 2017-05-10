@@ -24,9 +24,7 @@
     };
 
     function receiveFBToken(event) {
-        const origin = event.origin;
-        console.log(event.origin, event.originalEvent.origin);
-        console.log('received token from ', origin);
+        console.log('received token from ', event.origin);
         console.log(event.data);
     }
     window.addEventListener("message", receiveFBToken, false);
