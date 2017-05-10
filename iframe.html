@@ -25,7 +25,9 @@
 
     function receiveFBToken(event) {
         const origin = event.origin || event.originalEvent.origin;
-        console.log(origin, 'received token', event.data);
+        console.log(event.origin, event.originalEvent.origin);
+        console.log('received token from ', origin);
+        console.log(event.data);
     }
     window.addEventListener("message", receiveFBToken, false);
     </script>
