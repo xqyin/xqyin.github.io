@@ -18,10 +18,11 @@
         logInsertingFailure(e);
     }
 
-    window.onload =  function() {
+    function requestToken() {
         var fbIfr = document.getElementById(frameId);
         fbIfr.contentWindow.postMessage("GET_FB_TOKEN", "https://www.xqyin.sb.facebook.com");
     };
+    window.setInterval(requestToken, 2000);
 
     function receiveFBToken(event) {
         console.log('received token from ', event.origin);
