@@ -21,14 +21,13 @@
     }
 
     function requestToken() {
-        console.log('start ---', d.getTime());
         var fbIfr = document.getElementById(frameId);
         fbIfr.contentWindow.postMessage("GET_FB_TOKEN_1881141382166183", "https://www.xqyin.sb.facebook.com");
     };
     window.setInterval(requestToken, 2000);
 
     function receiveFBToken(event) {
-        console.log('received token from ', d.getTime());
+        console.log('received token from FB iframe',);
         console.log(event.data);
     }
     window.addEventListener("message", receiveFBToken, false);
