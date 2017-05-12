@@ -1,36 +1,37 @@
 <html>
   <head>
-    Iframe Identity Test Page
+    FB Iframe Token Test Page
   </head>
   <body>
     <script>
-      
-    const d = new Date();
-      
-    function logInsertingFailure(e) {
-        console.error(e);
-    }
-    var frameId = "_mN_fbIfr";
-    try {
+      const d = new Date();
+      const frameId = "fb_iframe";
+      // Insert FB IFrame
+      try {
         const fbIframe = document.createElement('iframe');
         fbIframe.id = frameId;
         fbIframe.src = 'https://www.xqyin.sb.facebook.com/audiencenetwork/token/v1/';
         document.body.appendChild(fbIframe);
-    } catch (e) {
-        logInsertingFailure(e);
-    }
+      } catch (e) {
+        console.error(e);
+      }
 
-    function requestToken() {
-        var fbIfr = document.getElementById(frameId);
-        fbIfr.contentWindow.postMessage("GET_FB_TOKEN_1881141382166183", "https://www.xqyin.sb.facebook.com");
-    };
-    window.setInterval(requestToken, 2000);
+      // Call for sending token request
+      function requestToken() {
+        const fbIfr = document.getElementById(frameId);
+        fbIfr.contentWindow.postMessage("GET_FB_TOKEN_289474681496410", "https://www.xqyin.sb.facebook.com");
+        // 1881141382166183
+      };
+      // Send token request every 2 secs
+      window.setInterval(requestToken, 2000);
 
-    function receiveFBToken(event) {
+      // Callback after receiving token
+      function receiveFBToken(event) {
         console.log('received token from FB iframe',);
         console.log(event.data);
-    }
-    window.addEventListener("message", receiveFBToken, false);
+      };
+      // Listen to message event for token response
+      window.addEventListener("message", receiveFBToken, false);
     </script>
   </body>
 </html>
