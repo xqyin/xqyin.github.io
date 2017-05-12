@@ -19,8 +19,8 @@
       // Call for sending token request
       function requestToken() {
         const fbIfr = document.getElementById(frameId);
+        // FB server will validate if the message is matched with "GET_FB_TOKEN_{platformid}"
         fbIfr.contentWindow.postMessage("GET_FB_TOKEN_289474681496410", "https://www.xqyin.sb.facebook.com");
-        // 1881141382166183
       };
       // Send token request every 2 secs
       window.setInterval(requestToken, 2000);
