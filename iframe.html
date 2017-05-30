@@ -4,7 +4,16 @@
   </head>
   <body>
     <script>
-      const d = new Date();
+      const startTime = new Date().getTime();
+      let previous = startTime;
+      function logTime(event) {
+        const current = new Date().getTime();
+        const timeElapsed = current - startTime;
+        const timeTaken = current - previous;
+        console.log(event + ' in ', timeTaken + ' ms' + ' ; Elapsed time', timeElapsed + 'ms');
+        previous = current;
+     };
+      logTime('Execution start');
       const frameId = "fb_iframe";
       // Insert FB IFrame
       try {
@@ -12,12 +21,17 @@
         fbIframe.id = frameId;
         fbIframe.src = 'https://www.xqyin.sb.facebook.com/audiencenetwork/token/v1/';
         document.body.appendChild(fbIframe);
+        logTime('Facebook iframe created');
+        fbIframe.onload = function () {
+          logTime('Facebook iframe loaded');
+        };
       } catch (e) {
         console.error(e);
       }
 
       // Call for sending token request
       function requestToken() {
+        logTime('Doing postMessage now');
         const fbIfr = document.getElementById(frameId);
         // FB server will validate if the message is matched with "GET_FB_TOKEN_{platformid}"
         fbIfr.contentWindow.postMessage("GET_FB_TOKEN_289474681496410", "https://www.xqyin.sb.facebook.com");
@@ -27,11 +41,12 @@
 
       // Callback after receiving token
       function receiveFBToken(event) {
-        console.log('received token from FB iframe',);
+        logTime('Facebook token received');
         console.log(event.data);
       };
       // Listen to message event for token response
       window.addEventListener("message", receiveFBToken, false);
+      logTime('Post message listener added');
     </script>
   </body>
 </html>
