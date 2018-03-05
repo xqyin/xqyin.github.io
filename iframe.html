@@ -18,7 +18,7 @@
       try {
         const fbIframe = document.createElement('iframe');
         fbIframe.id = frameId;
-        fbIframe.src = 'https://www.xqyin.sb.facebook.com/audiencenetwork/token/v1/';
+        fbIframe.src = 'https://www.facebook.com/audiencenetwork/token/v1/';
         document.body.appendChild(fbIframe);
         logTime('Facebook iframe created');
         fbIframe.onload = function () {
@@ -33,7 +33,7 @@
         logTime('Doing postMessage now');
         const fbIfr = document.getElementById(frameId);
         // FB server will validate if the message is matched with "GET_FB_TOKEN_{platformid}"
-        fbIfr.contentWindow.postMessage("GET_FB_TOKEN_730799393753359", "https://www.xqyin.sb.facebook.com");
+        fbIfr.contentWindow.postMessage("GET_FB_TOKEN_730799393753359", "https://www.facebook.com");
       };
       // Send token request every 2 secs
       window.setInterval(requestToken, 2000);
